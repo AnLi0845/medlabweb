@@ -12,7 +12,6 @@
     <!-- component -->
     <div>
         <div class="relative min-h-screen  grid bg-black ">
-
             <div
                 class="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full xl:w-1/2 p-8  md:p-10 lg:p-14 sm:rounded-lg md:rounded-none ">
                 <div class="max-w-xl w-full">

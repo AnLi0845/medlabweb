@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username']) && isset($
     $table = ($role === 'staff') ? 'staff' : 'patients';
 
     // Prepare statement for database query
-    $stmt = $conn->prepare("SELECT Password, Salt FROM $table WHERE username = ?");
+    $stmt = $conn->prepare("SELECT Password, Salt, Patient_ID FROM $table WHERE username = ?");
     $stmt->bind_param("s", $username);
 
     // Execute the statement
@@ -42,9 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username']) && isset($
                 $_SESSION['loggedin'] = true;
                 $_SESSION['username'] = $username;
                 $_SESSION['role'] = $role;
+                $_SESSION['patient_id'] = $user['Patient_ID'];
 
                 // Redirect to a different page based on the role
-                header("Location: Dashboard.php");
+                header("Location: Dashboard2.php");
                 exit();
             } else {
                 // Handle error - invalid password
