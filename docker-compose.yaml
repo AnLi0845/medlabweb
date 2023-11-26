@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+# php-apache
+  medlabweb:
+    build:
+      context: .
+    container_name: medlabweb
+    restart: unless-stopped
+    volumes:
+      - ./www/src:/var/www/html
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+      
+  # MySQL Service
+  medlab-db:
+    image: mysql:latest
+    container_name: MedLab_db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: MedLab
+      MYSQL_USER: MedLabWeb
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+      SERVICE_NAME: mysql
+    volumes:
+      - ./mysql/:/var/lib/mysql/
+    networks:
+      - app-network
+
+  # phpMyAdmin Service
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: laravel_phpmyadmin
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: medlab-db
+      MYSQL_ROOT_PASSWORD: password
+    networks:
+      - app-network
+
+# Networks
+networks:
+  app-network:
+    driver: bridge
