@@ -7,10 +7,34 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.php");
     exit;
 }
+// Assuming the logged-in user's ID is stored in session
+$patientId = $_SESSION['patient_id']; // Replace 'patient_id' with the actual session variable name
+
+// Get the order ID from URL parameter
+$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+include 'db-connect.php';
+// Verify that the order belongs to the logged-in user
+$orderCheckQuery = "SELECT Patient_ID FROM Orders WHERE Order_ID = ?";
+$orderCheckStmt = $conn->prepare($orderCheckQuery);
+$orderCheckStmt->bind_param("i", $order_id);
+$orderCheckStmt->execute();
+$orderCheckResult = $orderCheckStmt->get_result();
+
+if ($orderCheckResult->num_rows > 0) {
+    $orderData = $orderCheckResult->fetch_assoc();
+    if ($orderData['Patient_ID'] != $patientId) {
+        // Order does not belong to the user
+        header('Location: Dashboard2.php');
+        exit;
+    }
+} else {
+    // Order not found
+    echo "Order not found.";
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
