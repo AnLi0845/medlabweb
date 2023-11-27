@@ -2,6 +2,11 @@
 // Start the session
 session_start();
 // Check if the role is set in the request
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+    // Redirect to dashboard or profile page
+    header("Location: Dashboard2.php"); // Change 'dashboard.php' to your dashboard page
+    exit;
+}
 if (isset($_POST['role'])) {
     $role = $_POST['role'];
 
@@ -23,7 +28,6 @@ if (isset($_POST['role'])) {
             <!-- component -->
             <div>
                 <div class="relative min-h-screen  grid bg-black ">
-        
                     <div
                         class="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full xl:w-1/2 p-8  md:p-10 lg:p-14 sm:rounded-lg md:rounded-none ">
                         <div class="max-w-xl w-full">
@@ -31,7 +35,7 @@ if (isset($_POST['role'])) {
         
                                 <div class="flex items-center justify-center ">
                                     <div class="bg-black flex flex-col w-80 border border-gray-900 rounded-lg px-8 py-10">
-                                        <div class="font-bold text-lg text-white "> '. $role .' Login </div>
+                                        <div class="font-bold text-lg text-white "> ' . $role . ' Login </div>
                                         <form class="flex flex-col space-y-4 mt-10" action="LoginHandler.php" method="post">
                                             <label class="font-bold text-base text-white ">User name</label>
                                             <input type="text" name="username" placeholder="User name"
@@ -84,7 +88,7 @@ if (isset($_POST['role'])) {
         
                                 <div class="flex items-center justify-center ">
                                     <div class="bg-black flex flex-col w-80 border border-gray-900 rounded-lg px-8 py-10">
-                                        <div class="font-bold text-lg text-white "> '. $role .' Login </div>
+                                        <div class="font-bold text-lg text-white "> ' . $role . ' Login </div>
                                         <form class="flex flex-col space-y-4 mt-10" action="LoginHandler.php" method="post">
                                             <label class="font-bold text-base text-white ">User name</label>
                                             <input type="text" name="username" placeholder="User number"

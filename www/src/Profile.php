@@ -90,45 +90,82 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 <div id="Order">
                     <h4 class="text-xl font-bold py-4 ">Profile</h4>
                     <div class="overflow-x-scroll">
+
+                        <?php
+                        include 'db-connect.php';
+
+                        $username = $_SESSION['username']; // Assuming username is stored in session
                         
-                        <!-- Info -->
-                        <div class="my-4 flex flex-col 2xl:flex-row space-y-4 2xl:space-y-0 2xl:space-x-4">
+                        // Fetch basic user information
+                        $basicInfoQuery = "SELECT First_Name, Last_Name, DATE_FORMAT(Date_of_Birth, '%d-%m-%Y') as Date_of_Birth FROM Patients WHERE Username = ?";
+                        $stmt = $conn->prepare($basicInfoQuery);
+                        $stmt->bind_param("s", $username);
+                        $stmt->execute();
+                        $basicResult = $stmt->get_result();
+
+                        if ($basicResult->num_rows > 0) {
+                            $basicInfo = $basicResult->fetch_assoc();
+                            // Display basic user information
+                            echo '
+                            <div class="my-4 flex flex-col 2xl:flex-row space-y-4 2xl:space-y-0 2xl:space-x-4">
                             <div class="w-full flex flex-col 2xl:w-1/3">
                                 <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
                                     <h4 class=" text-slate-300 font-bold"></h4>
                                     <ul class="mt-2 text-gray-700">
                                         <li class="flex border-y py-2">
                                             <span class="font-bold w-24">Full name:</span>
-                                            <span class="text-gray-700">Amanda S. Ross</span>
+                                            <span class="text-gray-700">' . $basicInfo["First_Name"] . " " . $basicInfo["Last_Name"] . '</span>
                                         </li>
                                         <li class="flex border-b py-2">
                                             <span class="font-bold w-24">Birthday:</span>
-                                            <span class="text-gray-700">24 Jul, 1991</span>
+                                            <span class="text-gray-700">' . $basicInfo["Date_of_Birth"] . '</span>
                                         </li>
-                                        <li class="flex border-b py-2">
-                                            <span class="font-bold w-24">Joined:</span>
-                                            <span class="text-gray-700">10 Jan 2022 (25 days ago)</span>
-                                        </li>
-                                        <li class="flex border-b py-2">
-                                            <span class="font-bold w-24">Mobile:</span>
-                                            <span class="text-gray-700">(123) 123-1234</span>
-                                        </li>
-                                        <li class="flex border-b py-2">
+                            ';
+                        } else {
+                            echo "User information not found.";
+                        }
+
+                        // Prepare the call to the stored procedure for encrypted data
+                        $encDataQuery = "CALL DecryptPatientInfo(?)";
+                        $encStmt = $conn->prepare($encDataQuery);
+                        $encStmt->bind_param("s", $username);
+                        $encStmt->execute();
+                        $encResult = $encStmt->get_result();
+
+                        if ($encResult->num_rows > 0) {
+                            $decryptedInfo = $encResult->fetch_assoc();
+
+                            // Display decrypted information
+                            echo '
+                                            <li class="flex border-b py-2">
                                             <span class="font-bold w-24">Email:</span>
-                                            <span class="text-gray-700">amandaross@example.com</span>
+                                            <span class="text-gray-700">' . $decryptedInfo["Email"] . '</span>
                                         </li>
                                         <li class="flex border-b py-2">
-                                            <span class="font-bold w-24">Location:</span>
-                                            <span class="text-gray-700">New York, US</span>
+                                            <span class="font-bold w-24">Phone Number:</span>
+                                            <span class="text-gray-700"> '. $decryptedInfo["Phone_Number"] . '</span>
                                         </li>
                                         <li class="flex border-b py-2">
-                                            <span class="font-bold w-24">Languages:</span>
-                                            <span class="text-gray-700">English, Spanish</span>
+                                            <span class="font-bold w-24">Address:</span>
+                                            <span class="text-gray-700">' . $decryptedInfo["Address"] . '</span>
                                         </li>
-                                    </ul>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            ';
+                        } else {
+                            echo "Decrypted information not found.";
+                        }
+
+                        $conn->close();
+                        ?>
+
+
+
+                        <!-- Info -->
+
+
 
                     </div>
                 </div>

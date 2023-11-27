@@ -1,3 +1,13 @@
+<?php
+// Start the session
+session_start();
+// Check if the role is set in the request
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+    // Redirect to dashboard or profile page
+    header("Location: Dashboard2.php"); // Change 'dashboard.php' to your dashboard page
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
