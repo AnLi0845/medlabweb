@@ -55,18 +55,24 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 </a>
                 <hr class="my-2 border-slate-700">
                 <div id="menu" class="flex flex-col space-y-2 my-5">
-                    <a href="logout.php"
+                    <a href="Dashboard2.php"
                         class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-3 px-2 group">
                         <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 space-x-2 items-center">
                             <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor"
-                                    class="w-6 h-6 group-hover:text-indigo-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                                </svg>
-
+                                <p
+                                    class="font-bold text-base lg:text-lg text-slate-200 leading-4 group-hover:text-indigo-400">
+                                    Dashboard</p>
+                                <p class="text-slate-400 text-sm hidden md:block">Return to Dashboard</p>
                             </div>
+
+                        </div>
+                    </a>
+                </div>
+                <div id="menu" class="flex flex-col space-y-2 my-5">
+                    <a href="logout.php"
+                        class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-3 px-2 group">
+                        <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 space-x-2 items-center">
+
                             <div>
                                 <p
                                     class="font-bold text-base lg:text-lg text-slate-200 leading-4 group-hover:text-indigo-400">
@@ -92,31 +98,31 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 <th class="text-left py-3 px-2">Order Status</th>
                                 <th class="text-left py-3 px-2 rounded-r-lg">More Info</th>
                             </thead>
-                            <?php 
-                                include 'db-connect.php';
-                                // Assuming the logged-in user's ID is stored in session
-                                $patientId=$_SESSION['patient_id']; // SQL query to fetch order details 
-                                $sql = "SELECT o.Order_ID, tc.Test_Name, s.First_Name as Physician_First_Name, s.Last_Name as Physician_Last_Name, b.Billed_Amount, o.Status FROM Orders o JOIN Tests_Catalog tc ON o.Test_Code = tc.Test_Code JOIN Staff s ON o.Ordering_Physician = s.Staff_ID JOIN Billing b ON o.Order_ID = b.Order_ID WHERE o.Patient_ID = ?;";
-                                $stmt = $conn->prepare($sql);
-                                $stmt->bind_param("i", $patientId);
-                                $stmt->execute();
-                                $result = $stmt->get_result();
+                            <?php
+                            include 'db-connect.php';
+                            // Assuming the logged-in user's ID is stored in session
+                            $patientId = $_SESSION['patient_id']; // SQL query to fetch order details 
+                            $sql = "SELECT o.Order_ID, tc.Test_Name, s.First_Name as Physician_First_Name, s.Last_Name as Physician_Last_Name, b.Billed_Amount, o.Status FROM Orders o JOIN Tests_Catalog tc ON o.Test_Code = tc.Test_Code JOIN Staff s ON o.Ordering_Physician = s.Staff_ID JOIN Billing b ON o.Order_ID = b.Order_ID WHERE o.Patient_ID = ?;";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("i", $patientId);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
 
-                                // Check if there are orders
-                                if ($result->num_rows > 0) {
+                            // Check if there are orders
+                            if ($result->num_rows > 0) {
                                 // Output data of each row
-                                while($row = $result->fetch_assoc()) {
-                                echo '
+                                while ($row = $result->fetch_assoc()) {
+                                    echo '
                                 <tr class="border-b border-gray-700">
                                     <td class="py-3 px-2 font-bold">'
-                                    .$row["Test_Name"].'
+                                        . $row["Test_Name"] . '
                                     </td>
-                                    <td class="py-3 px-2">'.$row["Physician_First_Name"].' '.$row["Physician_Last_Name"].'</td>
-                                    <td class="py-3 px-2">$'.$row["Billed_Amount"].'</td>
-                                    <td class="py-3 px-2">'.$row["Status"].'</td>
+                                    <td class="py-3 px-2">' . $row["Physician_First_Name"] . ' ' . $row["Physician_Last_Name"] . '</td>
+                                    <td class="py-3 px-2">$' . $row["Billed_Amount"] . '</td>
+                                    <td class="py-3 px-2">' . $row["Status"] . '</td>
                                     <td class="py-3 px-2">
                                         <div class="inline-flex items-center space-x-3">
-                                            <a href="" title="Edit" class="hover:text-white">
+                                            <a href="orderDetail.php?order_id=' . $row["Order_ID"] . '" title="Order Detail" class="hover:text-white">
                                                 Detail
                                             </a>
                                         </div>
@@ -124,11 +130,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 </tr>
                                 ';
                                 }
-                                } else {
+                            } else {
                                 echo "No orders found";
-                                }
-                                $conn->close();
-                                ?>
+                            }
+                            $conn->close();
+                            ?>
                         </table>
                     </div>
                 </div>
