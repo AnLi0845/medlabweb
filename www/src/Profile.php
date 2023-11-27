@@ -14,7 +14,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Profile</title>
     <link href="/dist/output.css" rel="stylesheet">
 </head>
 
@@ -38,7 +38,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 <h1 class="font-bold text-lg lg:text-3xl bg-gradient-to-br from-white bg-clip-text">
                     MedLab<span class="text-indigo-400"></span></h1>
                 <p class="text-slate-400 text-sm mb-2">Welcome back</p>
-                <a href="Profile.php"
+                <a href="Dashboard2.php"
                     class="flex flex-col space-y-2 md:space-y-0 md:flex-row mb-5 items-center md:space-x-2 hover:bg-white/10 group transition duration-150 ease-linear rounded-lg group w-full py-3 px-2">
                     <div>
                         <img class="rounded-full w-10 h-10 relative object-cover"
@@ -88,54 +88,48 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             <!-- Content -->
             <div id="content" class="bg-white/10 col-span-9 rounded-lg p-6">
                 <div id="Order">
-                    <h1 class="font-bold py-4 uppercase">Order List</h1>
+                    <h4 class="text-xl font-bold py-4 ">Profile</h4>
                     <div class="overflow-x-scroll">
-                        <table class="w-full whitespace-nowrap">
-                            <thead class="bg-black/60">
-                                <th class="text-left py-3 px-2 rounded-l-lg">Test Name</th>
-                                <th class="text-left py-3 px-2">Physician</th>
-                                <th class="text-left py-3 px-2">Billed Amount</th>
-                                <th class="text-left py-3 px-2">Order Status</th>
-                                <th class="text-left py-3 px-2 rounded-r-lg">More Info</th>
-                            </thead>
-                            <?php
-                            include 'db-connect.php';
-                            // Assuming the logged-in user's ID is stored in session
-                            $patientId = $_SESSION['patient_id']; // SQL query to fetch order details 
-                            $sql = "SELECT o.Order_ID, tc.Test_Name, s.First_Name as Physician_First_Name, s.Last_Name as Physician_Last_Name, b.Billed_Amount, o.Status FROM Orders o JOIN Tests_Catalog tc ON o.Test_Code = tc.Test_Code JOIN Staff s ON o.Ordering_Physician = s.Staff_ID JOIN Billing b ON o.Order_ID = b.Order_ID WHERE o.Patient_ID = ?;";
-                            $stmt = $conn->prepare($sql);
-                            $stmt->bind_param("i", $patientId);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
+                        
+                        <!-- Info -->
+                        <div class="my-4 flex flex-col 2xl:flex-row space-y-4 2xl:space-y-0 2xl:space-x-4">
+                            <div class="w-full flex flex-col 2xl:w-1/3">
+                                <div class="flex-1 bg-white rounded-lg shadow-xl p-8">
+                                    <h4 class=" text-slate-300 font-bold"></h4>
+                                    <ul class="mt-2 text-gray-700">
+                                        <li class="flex border-y py-2">
+                                            <span class="font-bold w-24">Full name:</span>
+                                            <span class="text-gray-700">Amanda S. Ross</span>
+                                        </li>
+                                        <li class="flex border-b py-2">
+                                            <span class="font-bold w-24">Birthday:</span>
+                                            <span class="text-gray-700">24 Jul, 1991</span>
+                                        </li>
+                                        <li class="flex border-b py-2">
+                                            <span class="font-bold w-24">Joined:</span>
+                                            <span class="text-gray-700">10 Jan 2022 (25 days ago)</span>
+                                        </li>
+                                        <li class="flex border-b py-2">
+                                            <span class="font-bold w-24">Mobile:</span>
+                                            <span class="text-gray-700">(123) 123-1234</span>
+                                        </li>
+                                        <li class="flex border-b py-2">
+                                            <span class="font-bold w-24">Email:</span>
+                                            <span class="text-gray-700">amandaross@example.com</span>
+                                        </li>
+                                        <li class="flex border-b py-2">
+                                            <span class="font-bold w-24">Location:</span>
+                                            <span class="text-gray-700">New York, US</span>
+                                        </li>
+                                        <li class="flex border-b py-2">
+                                            <span class="font-bold w-24">Languages:</span>
+                                            <span class="text-gray-700">English, Spanish</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
 
-                            // Check if there are orders
-                            if ($result->num_rows > 0) {
-                                // Output data of each row
-                                while ($row = $result->fetch_assoc()) {
-                                    echo '
-                                <tr class="border-b border-gray-700">
-                                    <td class="py-3 px-2 font-bold">'
-                                        . $row["Test_Name"] . '
-                                    </td>
-                                    <td class="py-3 px-2">' . $row["Physician_First_Name"] . ' ' . $row["Physician_Last_Name"] . '</td>
-                                    <td class="py-3 px-2">$' . $row["Billed_Amount"] . '</td>
-                                    <td class="py-3 px-2">' . $row["Status"] . '</td>
-                                    <td class="py-3 px-2">
-                                        <div class="inline-flex items-center space-x-3">
-                                            <a href="orderDetail.php?order_id=' . $row["Order_ID"] . '" title="Order Detail" class="hover:text-white">
-                                                Detail
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                ';
-                                }
-                            } else {
-                                echo "No orders found";
-                            }
-                            $conn->close();
-                            ?>
-                        </table>
                     </div>
                 </div>
             </div>
