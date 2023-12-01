@@ -30,6 +30,7 @@ services:
       SERVICE_NAME: mysql
     volumes:
       - ./mysql/:/var/lib/mysql/
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
     networks:
       - app-network
 

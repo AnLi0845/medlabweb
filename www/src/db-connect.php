@@ -1,7 +1,7 @@
 <?php
 // Database credentials
 $host = 'medlab-db';  // or your database host
-$dbname = 'medlab';   // your database name
+$dbname = 'Medlab';   // your database name
 $user = 'MedLabWeb';   // your database username
 $password = 'password'; // your database password
 
